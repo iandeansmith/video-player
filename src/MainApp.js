@@ -1,50 +1,27 @@
 
-import { Lightning, Utils } from "@lightningjs/sdk";
-import axios from "axios";
+import { Lightning, Router } from "@lightningjs/sdk";
 
-import MovieList from './MovieList';
+import MovieBrowser from "./MovieBrowser";
+import MoviePlayer from "./MoviePlayer";
 
-export default class MainApp extends Lightning.Component
+const routes = {
+    root: 'home',
+    routes: [
+        {
+            path: 'home',
+            component: MovieBrowser,
+        },
+        {
+            path: 'player/:id',
+            component: MoviePlayer,
+        }
+    ]
+}
+
+export default class MainApp extends Router.App
 {
-	static getFonts() 
-	{
-		return [{ family: 'Regular', url: Utils.asset('fonts/Roboto-Regular.ttf') }]
-	}
-	
-	static _template()
-	{
-		return {
-			BG: {
-				rect: true,
-				x: 0, y: 0, w: 1920, h: 1080,
-				color: 0xFFEFEFEF,
-			},
-
-			Movies: {
-				type: MovieList,
-				show: false,
-				x: 20, y: 20, w: 1880, h: 190,
-				movies: [],
-			},
-		}
-	}
-
-	_getFocused()
-	{
-		return this.tag('Movies');
-	}
-
-	async _init()
-	{
-		try
-		{
-			var result = await axios.get(Utils.asset('movies.json'));
-
-			this.tag('Movies').setMovies(result.data.movies);
-		}
-		catch(err)
-		{
-			alert(err.message);
-		}
-	}
+    _setup()
+    {
+        Router.startRouter(routes);
+    }
 }

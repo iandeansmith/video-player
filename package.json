@@ -4,6 +4,7 @@
   "dependencies": {
     "@lightningjs/sdk": "^4.8.2",
     "@lightningjs/ui": "^1.2.1",
+    "@reduxjs/toolkit": "^1.8.0",
     "axios": "^0.26.1"
   }
 }

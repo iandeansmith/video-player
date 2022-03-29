@@ -1,8 +1,10 @@
 
 import { Lightning, Utils } from '@lightningjs/sdk';
-import { Carousel } from '@lightningjs/ui';
+import { List } from '@lightningjs/ui';
 
+import store from './store';
 import MovieListItem from './MovieListItem';
+import { StageSize } from './const';
 
 // size of entry thumbnails
 const THUMB_WIDTH = 400;
@@ -18,24 +20,22 @@ export default class MovieList extends Lightning.Component
 	{
 		return {
 			List: {
-				type: Carousel,
+				type: List,
 				x: 0,
 				y: 0,
-				w: 1880,
+				w: StageSize.width - 40,
 				h: 190,
 				spacing: 20,
-				signals: {
-					onIndexChanged: '_changedIndex'
-				}
 			}
 		}
 	}
 
 	setMovies(movies)
 	{
-		this.movies = [...movies];
+		var list = this.tag('List');
 
-		this.tag('List').add(this.movies.map(m => {
+		list.clear();
+		list.add(movies.map(m => {
 			return {
 				type: MovieListItem,
 				w: THUMB_WIDTH,
@@ -46,24 +46,35 @@ export default class MovieList extends Lightning.Component
 		}));
 	}
 
-	_changedIndex(data)
-	{
-		console.log(data.index);
-	}
-
-	_focus()
-	{
-		console.log('Movie list has focus?');
-	}
-
 	_getFocused()
 	{
 		return this.tag('List');
 	}
 
-	_captureEnter()
+	_init()
 	{
-		console.log(`Enter pressed: ${this.tag('List').index}`);
-		return true;
+		this.lastMovies = null;
+	}
+
+	_enable()
+	{
+		this.unsubFromStore = store.subscribe(() => {
+			let state = store.getState();
+
+			// kinda kludgy way to see if we need to refresh the movie list
+			if (this.lastMovies != state.movies)
+			{
+				let movies = state.movieIds.map(id => state.movies[id]);
+
+				this.lastMovies = state.movies;
+				this.setMovies(movies);
+			}
+		});
+	}
+
+	_disable()
+	{
+		if (this.unsubFromStore)
+			this.unsubFromStore();
 	}
 }
