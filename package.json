@@ -1,0 +1,9 @@
+{
+  "name": "com.ians.VideoPlayer",
+  "description": "VideoPlayer",
+  "dependencies": {
+    "@lightningjs/sdk": "^4.8.2",
+    "@lightningjs/ui": "^1.2.1",
+    "axios": "^0.26.1"
+  }
+}

@@ -1,0 +1,48 @@
+{
+	"movies": [
+		{
+			"id": 1,
+			"title": "Star Wars - A New Hope"
+		},
+		{
+			"id": 2,
+			"title": "Star Wars - The Empire Strikes Back"
+		},
+		{
+			"id": 3,
+			"title": "Star Wars - Return of the Jedi"
+		},
+		{
+			"id": 4,
+			"title": "Star Wars - The Phantom Menance"
+		},
+		{
+			"id": 5,
+			"title": "Star Wars - Attack of the Clones"
+		},
+		{
+			"id": 6,
+			"title": "Star Wars - Revenge of the Sith"
+		},
+		{
+			"id": 7,
+			"title": "Star Wars - The Force Awakens"
+		},
+		{
+			"id": 8,
+			"title": "Star Wars - The Last Jedi"
+		},
+		{
+			"id": 9,
+			"title": "Star Wars - Rise of Skywalker"
+		},
+		{
+			"id": 10,
+			"title": "Star Wars - Solo"
+		},
+		{
+			"id": 11,
+			"title": "Star Wars - Rogue One"
+		}
+	]
+}
