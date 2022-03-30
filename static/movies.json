@@ -5,7 +5,7 @@
 			"title": "Star Wars - A New Hope",
 			"thumbnail": "images/koalabear.jpg",
 			"poster": "images/newhope.jpg",
-			"video": "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+			"video": "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
 		},
 		{
 			"id": 2,
@@ -19,7 +19,7 @@
 			"title": "Star Wars - Return of the Jedi",
 			"thumbnail": "images/koalabear.jpg",
 			"poster": "images/newhope.jpg",
-			"video": "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+			"video": "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"
 
 		},
 		{
@@ -27,7 +27,7 @@
 			"title": "Star Wars - The Phantom Menance",
 			"thumbnail": "images/koalabear.jpg",
 			"poster": "images/newhope.jpg",
-			"video": "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+			"video": "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4"
 
 		},
 		{

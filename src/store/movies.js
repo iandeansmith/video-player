@@ -26,7 +26,6 @@ export const moviesSlice = createSlice({
         },
 
         setSelectedMovie: (state, { payload }) => {
-            console.log(payload);
             if (payload == null)
                 state.selectedMovie = null;
             else 

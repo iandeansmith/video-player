@@ -1,79 +1,100 @@
 
-import { Lightning, Utils } from "@lightningjs/sdk";
+import { Lightning, VideoPlayer } from "@lightningjs/sdk";
 
+import PlayerProgressBar from './PlayerProgressBar';
 import PlayerButton from "./PlayerButton";
+import { PB_ICON_PAUSE, PB_ICON_PLAY } from "./PlayerButton";
 
 export default class PlayerControls extends Lightning.Component
 {
-    static _template()
-    {
-        return {
-            Layout: {
-                x: 0,
-                y: 0,
-                w: w => w,
-                h: h => h,
+	static _template()
+	{
+		return {
+			Layout: {
+				x: 0,
+				y: 0,
+				w: w => w,
+				h: h => h,
 
-                flex: {
-                    padding: 20,
-                    justifyContent: 'center'
-                },
+				flex: {
+					padding: 0,
+					justifyContent: 'center'
+				},
 
-                children: [
-                    {
-                        ref: 'PlaybackButton',
-                        type: PlayerButton,
-                        icon: Utils.asset('images/play-solid.png'),
-                        visible: true,
-                        h: 100,
-                        w: 100,
-                        flexItem: {
-                            marginRight: 20,
-                        }
-                    },
+				PlaybackButton: {
+					type: PlayerButton,
+					visible: true,
+					h: 100,
+					w: 100,
+					flexItem: {
+						marginRight: 20,
+					},
+					signals: {
+						pressed: '_onTogglePlayback',
+					}
+				},
 
-                    {
-                        color: 0xFFFF00FF,
-                        rect: true,
-                        h: 100,
-                        flexItem: {
-                            grow: 1,
-                        }
-                    },
-                ]
-            }
-        }
-    }
+				Progress: {
+					type: PlayerProgressBar,
+					w: 780,
+				},
+			}
+		}
+	}
 
-    setPlaying(flag)
-    {
-        var button = this.tag('Layout').childList.getByRef('PlaybackButton');
+	_onTogglePlayback()
+	{
+		VideoPlayer.playPause();
+	}
 
-        console.log(button);
+	setPlaying(flag)
+	{
+		var button = this.tag('PlaybackButton');
 
-        if (flag)
-        {
-            console.log('PLAYING');
-            button.patch({ 
-                icon: Utils.asset('images/pause-solid.png')
-            });
-        }
-        else
-        {
-            button.patch({ 
-                icon: Utils.asset('images/play-solid.png')
-            });
+		if (flag)
+		{
+			button.setIconType(PB_ICON_PAUSE);
+		}
+		else
+		{
+			button.setIconType(PB_ICON_PLAY);
+		}
+	}
 
-        }
-    }
+	setProgress(value)
+	{
+		this.tag('Progress').setProgress(value);
+	}
 
-    _init()
-    {
-        this.focusedChild = 0;
-    }
+	_init()
+	{
+		this.focusedChild = 0;
+	}
 
-    _getFocused()
-    {
-        return this.tag('Layout').children[this.focusedChild];
-    }
+	_handleLeft()
+	{
+		this.focusedChild--;
+		
+		if (this.focusedChild < 0)
+			this.focusedChild = 0;
+
+		return true;
+	}
+
+	_handleRight()
+	{
+		var tag = this.tag('Layout');
+
+		this.focusedChild++;
+		
+		if (this.focusedChild >= tag.children.length)
+			this.focusedChild = tag.children.length-1;
+
+		return true;
+	}
+
+	_getFocused()
+	{
+		return this.tag('Layout').children[this.focusedChild];
+	}
 }

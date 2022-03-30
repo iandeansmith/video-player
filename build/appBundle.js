@@ -3,7 +3,7 @@
  * SDK version: 4.8.2
  * CLI version: 2.7.2
  *
- * Generated: Tue, 29 Mar 2022 21:41:57 GMT
+ * Generated: Wed, 30 Mar 2022 17:13:05 GMT
  */
 
 var APP_com_ians_VideoPlayer = (function () {
@@ -10519,7 +10519,6 @@ var APP_com_ians_VideoPlayer = (function () {
       setSelectedMovie: (state, {
         payload
       }) => {
-        console.log(payload);
         if (payload == null) state.selectedMovie = null;else state.selectedMovie = { ...payload
         };
       }
@@ -12830,8 +12829,8 @@ var APP_com_ians_VideoPlayer = (function () {
   }
 
   const StageSize = {
-    width: 1920,
-    height: 1080
+    width: 1280,
+    height: 720
   };
 
   const THUMB_WIDTH = 400;
@@ -13023,11 +13022,15 @@ var APP_com_ians_VideoPlayer = (function () {
 
   }
 
+  const PB_ICON_PLAY = "play";
+  const PB_ICON_PAUSE = "pause";
+  const PB_ICON_STOP = "stop";
+  const PB_ICON_CLOSE = "close";
   class PlayerButton extends Lightning.Component {
     static _template() {
       return {
         BG: {
-          color: 0x7FFFFFFF,
+          color: 0x00FFFFFF,
           rect: true,
           x: 0,
           y: 0,
@@ -13049,9 +13052,7 @@ var APP_com_ians_VideoPlayer = (function () {
     }
 
     _setup() {
-      this.tag('Icon').patch({
-        texture: Img(this.icon).contain(100, 100)
-      });
+      if (this.iconType != null) this.setIconType(this.iconType);
     }
 
     _stopAnimation() {
@@ -13065,37 +13066,175 @@ var APP_com_ians_VideoPlayer = (function () {
     _focus() {
       this.tag('BG').patch({
         smooth: {
-          color: 0x7F0000FF
-        }
-      });
-    }
-
-    _onfocus() {
-      this.tag('BG').patch({
-        smooth: {
           color: 0x7FFFFFFF
         }
       });
     }
 
+    _unfocus() {
+      this.tag('BG').patch({
+        smooth: {
+          color: 0x00FFFFFF
+        }
+      });
+    }
+
     _handleEnter() {
-      //this._stopTransition();
       // add effect when clicked
       this.pressedAnim = this.tag('BG').animation({
-        duration: 1,
+        duration: 0.5,
         repeat: 0,
         stopMethod: 'immediate',
         actions: [{
           p: 'color',
           v: {
-            0: 0xFF0000FF,
-            1: 0x7F0000FF
+            0: 0xFFFFFFFF,
+            1: 0x7FFFFFFF
           }
         }]
       });
-      this.pressedAnim.start(); // toggle video playback
+      this.pressedAnim.start(); // send signal
 
-      VideoPlayer.playPause();
+      this.signal('pressed');
+    }
+
+    setIconType(type) {
+      var icons = {
+        [PB_ICON_PLAY]: Utils.asset("images/play-solid.png"),
+        [PB_ICON_PAUSE]: Utils.asset("images/pause-solid.png"),
+        [PB_ICON_STOP]: Utils.asset("images/stop-solid.png"),
+        [PB_ICON_CLOSE]: Utils.asset("images/xmark-solid.png")
+      };
+
+      if (icons.hasOwnProperty(type)) {
+        this.tag('Icon').patch({
+          texture: Img(icons[type]).contain(100, 100)
+        });
+      }
+    }
+
+  }
+
+  const {
+    Tools
+  } = Lightning; // size of entire component
+
+  const COMP_WIDTH = 780;
+  const COMP_HEIGHT = 100; // size of scrubber
+
+  const SCRUB_WIDTH = COMP_WIDTH - 40;
+  const SCRUB_HEIGHT = 20;
+  class PlayerProgressBar extends Lightning.Component {
+    static _template() {
+      return {
+        BG: {
+          rect: true,
+          color: 0,
+          x: 0,
+          y: 0,
+          w: COMP_WIDTH,
+          h: COMP_HEIGHT,
+          transition: {
+            color: {
+              duration: 0.5
+            }
+          }
+        },
+        ScrubberBG: {
+          x: 20,
+          y: 40,
+          w: SCRUB_WIDTH,
+          h: SCRUB_HEIGHT,
+          texture: Tools.getRoundRect(SCRUB_WIDTH, SCRUB_HEIGHT, 10, 0, 0, true, 0x7FFFFFFF)
+        },
+        ProgressArea: {
+          clipping: true,
+          x: 20,
+          y: 40,
+          w: 0,
+          h: SCRUB_HEIGHT,
+          ScrubberProgress: {
+            w: SCRUB_WIDTH,
+            h: SCRUB_HEIGHT,
+            texture: Tools.getRoundRect(SCRUB_WIDTH, SCRUB_HEIGHT, 10, 0, 0, true, 0xFFFFFFFF)
+          }
+        },
+        ScrubberHandle: {
+          visible: false,
+          x: 5,
+          y: 35,
+          w: 30,
+          h: 30,
+          texture: Tools.getRoundRect(30, 30, 15, 0, 0, true, 0xFF82de37)
+        }
+      };
+    }
+
+    static _states() {
+      return [class IdleState extends this {
+        _handleEnter() {
+          this._setState('ScrubbingState');
+        }
+
+      }, class ScrubbingState extends this {
+        _handleKey() {
+          return true;
+        }
+
+        _handleEnter() {
+          this._setState('IdleState');
+
+          return true;
+        }
+
+        _handleLeft() {
+          VideoPlayer.seek(VideoPlayer.currentTime - 30);
+          return true;
+        }
+
+        _handleRight() {
+          VideoPlayer.seek(VideoPlayer.currentTime + 30);
+          return true;
+        }
+
+        $enter() {
+          if (VideoPlayer.playing) VideoPlayer.pause();
+          this.tag('ScrubberHandle').patch({
+            visible: true
+          });
+        }
+
+        $exit() {
+          VideoPlayer.play();
+          this.tag('ScrubberHandle').patch({
+            visible: false
+          });
+        }
+
+      }];
+    }
+
+    setProgress(value) {
+      var size = SCRUB_WIDTH * value;
+      var pos = size + 5;
+      this.tag('ProgressArea').patch({
+        w: size
+      });
+      this.tag('ScrubberHandle').patch({
+        x: pos
+      });
+    }
+
+    _init() {
+      this._setState('IdleState');
+    }
+
+    _focus() {
+      this.tag('BG').setSmooth('color', 0x40FFFFFF);
+    }
+
+    _unfocus() {
+      this.tag('BG').setSmooth('color', 0);
     }
 
   }
@@ -13109,49 +13248,62 @@ var APP_com_ians_VideoPlayer = (function () {
           w: w => w,
           h: h => h,
           flex: {
-            padding: 20,
+            padding: 0,
             justifyContent: 'center'
           },
-          children: [{
-            ref: 'PlaybackButton',
+          PlaybackButton: {
             type: PlayerButton,
-            icon: Utils.asset('images/play-solid.png'),
             visible: true,
             h: 100,
             w: 100,
             flexItem: {
               marginRight: 20
+            },
+            signals: {
+              pressed: '_onTogglePlayback'
             }
-          }, {
-            color: 0xFFFF00FF,
-            rect: true,
-            h: 100,
-            flexItem: {
-              grow: 1
-            }
-          }]
+          },
+          Progress: {
+            type: PlayerProgressBar,
+            w: 780
+          }
         }
       };
     }
 
+    _onTogglePlayback() {
+      VideoPlayer.playPause();
+    }
+
     setPlaying(flag) {
-      var button = this.tag('Layout').childList.getByRef('PlaybackButton');
-      console.log(button);
+      var button = this.tag('PlaybackButton');
 
       if (flag) {
-        console.log('PLAYING');
-        button.patch({
-          icon: Utils.asset('images/pause-solid.png')
-        });
+        button.setIconType(PB_ICON_PAUSE);
       } else {
-        button.patch({
-          icon: Utils.asset('images/play-solid.png')
-        });
+        button.setIconType(PB_ICON_PLAY);
       }
+    }
+
+    setProgress(value) {
+      this.tag('Progress').setProgress(value);
     }
 
     _init() {
       this.focusedChild = 0;
+    }
+
+    _handleLeft() {
+      this.focusedChild--;
+      if (this.focusedChild < 0) this.focusedChild = 0;
+      return true;
+    }
+
+    _handleRight() {
+      var tag = this.tag('Layout');
+      this.focusedChild++;
+      if (this.focusedChild >= tag.children.length) this.focusedChild = tag.children.length - 1;
+      return true;
     }
 
     _getFocused() {
@@ -13164,6 +13316,17 @@ var APP_com_ians_VideoPlayer = (function () {
   class MoviePlayer extends Lightning.Component {
     static _template() {
       return {
+        CloseButton: {
+          type: PlayerButton,
+          iconType: PB_ICON_CLOSE,
+          x: 20,
+          y: 20,
+          w: 50,
+          h: 50,
+          signals: {
+            pressed: '_onBackPressed'
+          }
+        },
         Controls: {
           type: PlayerControls,
           x: StageSize.width / 2 - CONTROLS_WIDTH / 2,
@@ -13184,16 +13347,23 @@ var APP_com_ians_VideoPlayer = (function () {
     }
 
     _init() {
+      this.focusedChild = 1;
       this.movie = null;
       this.paused = false;
     }
 
     _getFocused() {
-      return this.tag('Controls');
+      return this.children[this.focusedChild];
     }
 
     _firstActive() {
       VideoPlayer.consumer(this);
+      VideoPlayer.size(StageSize.width, StageSize.height);
+    }
+
+    _setFocusedChild(value) {
+      if (value < 0) value = 0;else if (value >= this.children.length) value = this.children.length - 1;
+      this.focusedChild = value;
     }
 
     _enable() {
@@ -13204,7 +13374,15 @@ var APP_com_ians_VideoPlayer = (function () {
       VideoPlayer.clear();
     }
 
-    _handleLeft() {
+    _handleUp() {
+      this._setFocusedChild(this.focusedChild - 1);
+    }
+
+    _handleDown() {
+      this._setFocusedChild(this.focusedChild + 1);
+    }
+
+    _onBackPressed() {
       Router.back();
     }
 
@@ -13214,6 +13392,11 @@ var APP_com_ians_VideoPlayer = (function () {
 
     $videoPlayerPlaying() {
       this.tag('Controls').setPlaying(true);
+    }
+
+    $videoPlayerTimeUpdate() {
+      var percent = VideoPlayer.currentTime / VideoPlayer.duration;
+      this.tag('Controls').setProgress(percent);
     }
 
   }
