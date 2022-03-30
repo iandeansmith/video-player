@@ -11,7 +11,7 @@
 			"id": 2,
 			"title": "Star Wars - The Empire Strikes Back",
 			"thumbnail": "images/koalabear.jpg",
-			"poster": "images/newhope.jpg",
+			"poster": "images/empire.jpg",
 			"video": "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
 		},
 		{
@@ -26,7 +26,7 @@
 			"id": 4,
 			"title": "Star Wars - The Phantom Menance",
 			"thumbnail": "images/koalabear.jpg",
-			"poster": "images/newhope.jpg",
+			"poster": "images/empire.jpg",
 			"video": "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4"
 
 		},
@@ -42,7 +42,7 @@
 			"id": 6,
 			"title": "Star Wars - Revenge of the Sith",
 			"thumbnail": "images/koalabear.jpg",
-			"poster": "images/newhope.jpg",
+			"poster": "images/empire.jpg",
 			"video": "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
 
 		},
@@ -58,7 +58,7 @@
 			"id": 8,
 			"title": "Star Wars - The Last Jedi",
 			"thumbnail": "images/koalabear.jpg",
-			"poster": "images/newhope.jpg",
+			"poster": "images/empire.jpg",
 			"video": "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
 
 		},
@@ -74,7 +74,7 @@
 			"id": 10,
 			"title": "Star Wars - Solo",
 			"thumbnail": "images/koalabear.jpg",
-			"poster": "images/newhope.jpg",
+			"poster": "images/empire.jpg",
 			"video": "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
 
 		},

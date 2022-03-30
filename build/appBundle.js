@@ -3,7 +3,7 @@
  * SDK version: 4.8.2
  * CLI version: 2.7.2
  *
- * Generated: Wed, 30 Mar 2022 17:13:05 GMT
+ * Generated: Wed, 30 Mar 2022 17:42:07 GMT
  */
 
 var APP_com_ians_VideoPlayer = (function () {
@@ -12896,6 +12896,14 @@ var APP_com_ians_VideoPlayer = (function () {
         PosterImage: {
           //texture: Img(Utils.asset('images/newhope.jpg')).cover(1920, 1080),
           visible: false,
+          x: 0,
+          y: 0,
+          w: w => w,
+          h: h => h
+        },
+        Cover: {
+          color: 0x7F000000,
+          rect: true,
           x: 0,
           y: 0,
           w: w => w,

@@ -1,5 +1,5 @@
 
-import { Img, Lightning, Utils } from "@lightningjs/sdk";
+import { Img, Lightning, Utils, Colors } from "@lightningjs/sdk";
 
 import store from './store';
 import { StageSize } from "./const";
@@ -12,6 +12,15 @@ export default class CurrentMoviePoster extends Lightning.Component
             PosterImage: {
                 //texture: Img(Utils.asset('images/newhope.jpg')).cover(1920, 1080),
                 visible: false,
+                x: 0,
+                y: 0,
+                w: w => w,
+                h: h => h,
+            },
+
+            Cover: {
+                color: 0x7F000000,
+                rect: true,
                 x: 0,
                 y: 0,
                 w: w => w,
